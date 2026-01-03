@@ -1,0 +1,6 @@
+# indent backups
+*.c~
+*.h~
+
+# build artifacts
+main

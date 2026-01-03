@@ -1,0 +1,9 @@
+-kr
+-i4
+-nut
+-l80
+-bad
+-bap
+-nce
+-ncs
+-sob
