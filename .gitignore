@@ -4,3 +4,6 @@
 
 # build artifacts
 main
+
+# rom file
+rom.bin
