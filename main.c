@@ -16,6 +16,10 @@ typedef struct {
     unsigned long rom_end_address;
     unsigned long ram_start_address;
     unsigned long ram_end_address;
+    char extra_memory[13];
+    char modem_support[13];
+    char reserved[41];
+    char region_support[17];
 } MegaDriveRomHeader;
 
 static MegaDriveRomHeader rom_header;
@@ -170,6 +174,46 @@ int read_rom_header(const char *file_name)
         ((unsigned long)address_buffer[2] << 8) |
         ((unsigned long)address_buffer[3]);
 
+    byte_count = fread(rom_header.extra_memory, 1, 12, file_pointer);
+    if (byte_count != 12) {
+        printf("error: failed to read extra memory (read %lu bytes)\n",
+               (unsigned long)byte_count);
+        fclose(file_pointer);
+
+        return 1;
+    }
+    rom_header.extra_memory[13] = '\0';
+
+    byte_count = fread(rom_header.modem_support, 1, 12, file_pointer);
+    if (byte_count != 12) {
+        printf("error: failed to read modem support (read %lu bytes)\n",
+               (unsigned long)byte_count);
+        fclose(file_pointer);
+
+        return 1;
+    }
+    rom_header.modem_support[13] = '\0';
+
+    byte_count = fread(rom_header.reserved, 1, 40, file_pointer);
+    if (byte_count != 40) {
+        printf("error: failed to read reserved (read %lu bytes)\n",
+               (unsigned long)byte_count);
+        fclose(file_pointer);
+
+        return 1;
+    }
+    rom_header.reserved[41] = '\0';
+
+    byte_count = fread(rom_header.region_support, 1, 16, file_pointer);
+    if (byte_count != 16) {
+        printf("error: failed to read region support (read %lu bytes)\n",
+               (unsigned long)byte_count);
+        fclose(file_pointer);
+
+        return 1;
+    }
+    rom_header.region_support[17] = '\0';
+
     fclose(file_pointer);
 
     return 0;
@@ -193,6 +237,10 @@ void print_rom_header()
     printf("ram start address         : [%08lX]\n",
            rom_header.ram_start_address);
     printf("ram end address           : [%08lX]\n", rom_header.ram_end_address);
+    printf("extra memory              : [%s]\n", rom_header.extra_memory);
+    printf("modem support             : [%s]\n", rom_header.extra_memory);
+    printf("reserved                  : [%s]\n", rom_header.reserved);
+    printf("region support            : [%s]\n", rom_header.region_support);
 }
 
 int main(void)
